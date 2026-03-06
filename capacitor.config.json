@@ -1,0 +1,13 @@
+{
+  "appId": "com.quickclock.app",
+  "appName": "QuickClock",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
