@@ -49,15 +49,18 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "defaultConfiguration": "development",
+          "options": {
+            "buildTarget": "quickclock:build"
+          },
           "configurations": {
             "production": {
-              "browserTarget": "quickclock:build:production"
+              "buildTarget": "quickclock:build:production"
             },
             "development": {
-              "browserTarget": "quickclock:build:development"
+              "buildTarget": "quickclock:build:development"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         }
       }
     }
