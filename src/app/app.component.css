@@ -26,6 +26,30 @@
   font-variant-numeric: tabular-nums;
 }
 
+.worked-time {
+  text-align: center;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 8px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+}
+
+.worked-time .label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.worked-time .time {
+  color: var(--info-color);
+  font-weight: bold;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
 .status {
   text-align: center;
   padding: 12px;

@@ -5,6 +5,11 @@
 
   <div class="time-display">{{ currentTime }}</div>
 
+  <div class="worked-time">
+    <span class="label">Arbeitszeit:</span>
+    <span class="time">{{ workedTime }}</span>
+  </div>
+
   <div [ngClass]="getStatusClass()">
     {{ getStatusLabel() }}
   </div>

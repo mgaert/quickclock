@@ -145,4 +145,36 @@ export class WorkTimeService {
     });
     return csv;
   }
-}
+
+  calculateWorkedHours(): { hours: number; minutes: number; total: number } {
+    const logs = this.todayLogsSubject.value;
+    let totalMinutes = 0;
+
+    for (let i = 0; i < logs.length; i += 2) {
+      const kommenLog = logs[i];
+      const gehenLog = logs[i + 1];
+
+      if (kommenLog && kommenLog.type === 'kommen' && gehenLog && gehenLog.type === 'gehen') {
+        const diffMs = gehenLog.timestamp - kommenLog.timestamp;
+        const diffMinutes = diffMs / (1000 * 60);
+        totalMinutes += diffMinutes;
+      }
+    }
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = Math.round(totalMinutes % 60);
+
+    return {
+      hours,
+      minutes,
+      total: totalMinutes
+    };
+  }
+
+  getFormattedWorkedTime(): string {
+    const { hours, minutes } = this.calculateWorkedHours();
+    if (hours === 0 && minutes === 0) {
+      return '0h 0m';
+    }
+    return `${hours}h ${minutes}m`;
+  }

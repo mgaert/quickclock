@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   currentTime = '--:--';
   todayLogs: WorkTimeEntry[] = [];
   status: string = 'ready';
+  workedTime = '0h 0m';
 
   private destroy$ = new Subject<void>();
   private timeInterval: any;
@@ -23,13 +24,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.updateTime();
-    this.timeInterval = setInterval(() => this.updateTime(), 10000);
+    this.timeInterval = setInterval(() => {
+      this.updateTime();
+      this.updateWorkedTime();
+    }, 1000);
 
     this.workTimeService.todayLogs$
       .pipe(takeUntil(this.destroy$))
       .subscribe(logs => {
         this.todayLogs = logs;
         this.updateStatus();
+        this.updateWorkedTime();
       });
   }
 
@@ -50,6 +55,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private updateStatus(): void {
     this.status = this.workTimeService.getStatus();
+  }
+
+  private updateWorkedTime(): void {
+    this.workedTime = this.workTimeService.getFormattedWorkedTime();
   }
 
   async recordKommen(): Promise<void> {
