@@ -14,10 +14,10 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "ES2022",
-    "module": "ES2022",
-    "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"],
+    "target": "ES2024",
+    "module": "ES2024",
+    "useDefineForClassFields": true,
+    "lib": ["ES2024", "dom"],
     "esModuleInterop": true
   },
   "angularCompilerOptions": {
