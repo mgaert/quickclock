@@ -1,6 +1,9 @@
 <div class="container">
   <div class="header">
     <h1>QuickClock</h1>
+    <button class="btn-theme-toggle" (click)="toggleTheme()" [title]="'Theme: ' + currentTheme">
+      {{ getThemeIcon() }}
+    </button>
   </div>
 
   <div class="time-display">{{ currentTime }}</div>
@@ -46,3 +49,4 @@
     <button class="btn-reset" (click)="resetDay()">🗑 Heute löschen</button>
   </div>
 </div>
+

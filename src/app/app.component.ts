@@ -9,13 +9,14 @@ import { takeUntil } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit, OnDestroy {
   currentTime = '--:--';
   todayLogs: WorkTimeEntry[] = [];
   status: string = 'ready';
   workedTime = '0h 0m';
+  currentTheme: 'light' | 'dark' = 'dark';
 
   private destroy$ = new Subject<void>();
   private timeInterval: any;
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private workTimeService: WorkTimeService) {}
 
   ngOnInit(): void {
+    this.loadTheme();
     this.updateTime();
     this.timeInterval = setInterval(() => {
       this.updateTime();
@@ -104,5 +106,27 @@ export class AppComponent implements OnInit, OnDestroy {
 
   getStatusClass(): string {
     return `status ${this.status}`;
+  }
+
+  private loadTheme(): void {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    this.setTheme(theme);
+  }
+
+  setTheme(theme: 'light' | 'dark'): void {
+    this.currentTheme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }
+
+  toggleTheme(): void {
+    const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+  }
+
+  getThemeIcon(): string {
+    return this.currentTheme === 'dark' ? '☀️' : '🌙';
   }
 }

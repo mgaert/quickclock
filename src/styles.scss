@@ -1,0 +1,201 @@
+@import './variables';
+
+// ============================================================================
+// ROOT - Default Dark Theme
+// ============================================================================
+
+:root {
+  @include theme($dark-palette);
+}
+
+// ============================================================================
+// LIGHT THEME
+// ============================================================================
+
+[data-theme='light'] {
+  @include theme($light-palette);
+}
+
+// ============================================================================
+// DARK THEME (Explicit)
+// ============================================================================
+
+[data-theme='dark'] {
+  @include theme($dark-palette);
+}
+
+// ============================================================================
+// SYSTEM THEME (Respects OS preference)
+// ============================================================================
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    @include theme($light-palette);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include theme($dark-palette);
+  }
+}
+
+// ============================================================================
+// GLOBAL RESET
+// ============================================================================
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: $font-family;
+  overflow: hidden;
+  transition: background-color $transition-normal, color $transition-normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: $font-size-base;
+}
+
+// ============================================================================
+// BUTTON STYLES
+// ============================================================================
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: $border-radius-md;
+  transition: all $transition-fast;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================================================
+// INPUT STYLES
+// ============================================================================
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: $font-size-base;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// Prevent zoom on iOS
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+// ============================================================================
+// SCROLLBAR STYLES
+// ============================================================================
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-light);
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    background: var(--text-secondary);
+  }
+}
+
+// Firefox
+* {
+  scrollbar-color: var(--surface-light) var(--background);
+  scrollbar-width: thin;
+}
+
+// ============================================================================
+// UTILITY CLASSES
+// ============================================================================
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
