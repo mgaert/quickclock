@@ -178,3 +178,4 @@ export class WorkTimeService {
     }
     return `${hours}h ${minutes}m`;
   }
+}
