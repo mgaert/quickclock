@@ -2,18 +2,34 @@
 
 ## Schritt-für-Schritt Anleitung
 
-### Schritt 1: Developer Mode aktivieren
-1. **Watch öffnen**
-2. Gehe zu: **Einstellungen > About Watch**
-3. Scrolle zu **Build Number**
-4. Tippe 7x auf **Build Number** (wie auf Android Phones)
-5. "Developer Mode activated" sollte erscheinen
+### Schritt 1: Developer Mode aktivieren (Galaxy Watch 8)
+
+**Galaxy Watch 8 hat ein neues Menü-System!**
+
+1. **Watch-Display antippen** um zu aktivieren
+2. **Von oben nach unten wischen** (Quick Settings öffnen)
+3. **Settings Icon** (Zahnrad) antippen
+4. Scrolle down zu: **Apps > Settings** (oder einfach **Settings**)
+5. Gehe zu: **About Watch**
+6. Scrolle zu **Software Version** oder **Build Number**
+7. **7x auf die Versionsnummer tippen** (Build Number)
+8. Warte bis "Developer Mode activated" erscheint
+
+**Falls du nur Settings siehst:**
+- Gehe zu: **Settings > Apps**
+- Suche nach **Developer Options** oder **System**
+- Öffne diese
+- Scrolle zu **Developer Mode** und aktiviere es
 
 ### Schritt 2: USB Debugging aktivieren
-1. Zurück zu **Einstellungen**
-2. Gehe zu **Developer > Debugging**
-3. Aktiviere **USB Debugging** (Toggle an)
-4. Oder: **ADB Debugging** (falls vorhanden)
+
+1. **Von oben nach unten wischen** → Settings öffnen
+2. **Settings > Apps > Settings** (oder die System-App)
+3. Scrolle zu **Developer > Developer Options** oder direkt **Developer**
+4. Aktiviere:
+   - **ADB Debugging** (oder **USB Debugging**)
+   - **Network ADB** (sehr wichtig!)
+5. Die Watch zeigt dann eine IP-Adresse an - **diese notieren!**
 
 ### Schritt 3: Watch mit PC verbinden (kabellos)
 
