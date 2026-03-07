@@ -1,101 +1,71 @@
-# QuickClock - Arbeitszeit Tracker
+# QuickClock - Native Wear OS Work Time Tracker
 
-Eine einfache, native Android-App zur Erfassung von Arbeitszeiten (Kommen/Gehen). Optimiert für Galaxy Watch und Smartphones.
+A native Android Wear OS 5 app for tracking work hours on Samsung Galaxy Watch 8.
 
 ## Features
 
-- ✓ **Einfache Bedienung** - Zwei große Buttons für "Kommen" und "Gehen"
-- ✓ **Lokale Speicherung** - Alle Daten werden auf dem Gerät gespeichert
-- ✓ **Tagesübersicht** - Alle erfassten Zeiten sichtbar
-- ✓ **Status-Anzeige** - Zeigt ob du gerade im Dienst bist
-- ✓ **CSV-Export** - Deine Daten kannst du exportieren
-- ✓ **Responsive Design** - Optimiert für kleine Bildschirme (Watch)
-- ✓ **Offline** - Funktioniert komplett ohne Internetverbindung
+- Quick check-in/check-out time tracking
+- Automatic work duration calculation
+- CSV export of work sessions
+- Kotlin + Jetpack Compose UI optimized for round displays
+- Persistent local storage using DataStore
 
 ## Tech Stack
 
-- **Angular 17** - Frontend Framework
-- **Capacitor** - Cross-platform mobile framework
-- **TypeScript** - Programmiersprache
-- **CSS3** - Styling mit CSS-Variablen
+- **Kotlin** - Programming language
+- **Jetpack Compose** - Modern UI toolkit
+- **Wear Compose** - Wear OS specific Compose library
+- **DataStore Preferences** - Local data persistence
+- **Android minSDK 26** - Wear OS 5+
 
-## Installation
+## Build & Deploy
 
-### Voraussetzungen
-- Node.js 18+
-- npm oder yarn
-- Android SDK (für Android-Build)
-- Java Development Kit (JDK)
+### Prerequisites
+- Android SDK 34 (API level 34)
+- minSDK 26 (Wear OS 5)
+- Java 21
+- Gradle 8.10.2
 
-### Setup
-
+### Build
 ```bash
-# Abhängigkeiten installieren
-npm install
-
-# Development Server starten
-npm run start
-
-# Produktions-Build
-npm run build:prod
-
-# Mit Capacitor synchronisieren
-npm run cap:sync
-
-# Android Studio öffnen
-npm run cap:open:android
+cd android
+./gradlew clean build
 ```
 
-## Verwendung
+### Deploy to Watch
+```bash
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+adb shell am start -n "com.quickclock.app/.MainActivity"
+```
 
-1. **Kommen:** App öffnen und "✓ Kommen" Button drücken
-2. **Gehen:** "✗ Gehen" Button drücken
-3. **Export:** Deine Zeiten als CSV exportieren
-4. **Löschen:** Einzelne Einträge oder den ganzen Tag löschen
-
-## Projektstruktur
+## Project Structure
 
 ```
-src/
+android/
 ├── app/
-│   ├── services/
-│   │   └── worktime.service.ts  # Logik für Zeit-Erfassung
-│   ├── app.component.ts         # Hauptkomponente
-│   ├── app.component.html       # Template
-│   └── app.component.css        # Styling
-├── styles.css                   # Globale Styles
-├── index.html                   # HTML Entry Point
-└── main.ts                      # Angular Bootstrap
+│   ├── src/main/
+│   │   ├── kotlin/com/quickclock/app/
+│   │   │   ├── MainActivity.kt
+│   │   │   ├── model/Worktime.kt
+│   │   │   ├── viewmodel/WorktimeViewModel.kt
+│   │   │   ├── data/WorktimeRepository.kt
+│   │   │   ├── data/WorktimeDataStore.kt
+│   │   │   └── ui/
+│   │   │       ├── theme/
+│   │   │       ├── screens/
+│   │   │       └── components/
+│   │   ├── res/
+│   │   │   ├── values/
+│   │   │   │   ├── strings.xml
+│   │   │   │   └── colors.xml
+│   │   │   └── mipmap/ (launcher icons)
+│   │   └── AndroidManifest.xml
+│   └── build.gradle
+├── build.gradle
+├── settings.gradle
+└── local.properties (local only)
 ```
 
-## Datenspeicherung
-
-Alle Zeiten werden lokal in der Capacitor Preferences API gespeichert. Format:
-```json
-{
-  "worktime_logs": {
-    "2024-03-06": [
-      {
-        "id": "timestamp",
-        "type": "kommen",
-        "time": "08:00:00",
-        "timestamp": 1709723100000,
-        "date": "2024-03-06"
-      }
-    ]
-  }
-}
-```
-
-## Build für Galaxy Watch
-
-Galaxy Watch läuft auf Wear OS (Android). Die App wird wie eine normale Android-App gebaut:
-
-1. `npm run build:prod` - Produktions-Build erstellen
-2. `npm run cap:sync` - Mit Capacitor synchronisieren
-3. `npm run cap:open:android` - Android Studio öffnen
-4. In Android Studio das Projekt öffnen und auf "Run" klicken
-
-## Lizenz
+## License
 
 MIT
