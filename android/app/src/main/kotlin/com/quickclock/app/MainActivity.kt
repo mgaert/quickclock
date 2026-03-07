@@ -1,5 +1,12 @@
 package com.quickclock.app
 
+import android.app.KeyguardManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
 import androidx.wear.compose.material.Button
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -34,20 +42,87 @@ class MainActivity : ComponentActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannel()
         setContent {
             QuickClockTheme {
-                QuickClockApp(viewModel)
+                QuickClockApp(viewModel) { 
+                    // Callback: Go home after check-in
+                    goHome()
+                }
             }
         }
+    }
+    
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "worktime_channel",
+                "Work Time Tracking",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Notifications for work time tracking"
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+    
+    fun showWorkingNotification() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        val notification = NotificationCompat.Builder(this, "worktime_channel")
+            .setSmallIcon(android.R.drawable.ic_menu_info_details)
+            .setContentTitle("QuickClock")
+            .setContentText("I am in - Working...")
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, notification)
+    }
+    
+    fun hideWorkingNotification() {
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(1)
+    }
+    
+    private fun goHome() {
+        val homeIntent = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(homeIntent)
     }
 }
 
 @Composable
-fun QuickClockApp(viewModel: WorktimeViewModel) {
+fun QuickClockApp(viewModel: WorktimeViewModel, onCheckInComplete: () -> Unit = {}) {
     val currentSession by viewModel.currentSession.collectAsState()
     val currentTime by viewModel.currentTime.collectAsState()
     val todaySummary by viewModel.todaySummary.collectAsState()
     val message by viewModel.message.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val mainActivity = context as? MainActivity
+    
+    // Show/hide notification based on session state
+    LaunchedEffect(currentSession) {
+        if (currentSession != null) {
+            mainActivity?.showWorkingNotification()
+        } else {
+            mainActivity?.hideWorkingNotification()
+        }
+    }
     
     Box(
         modifier = Modifier
@@ -81,7 +156,7 @@ fun QuickClockApp(viewModel: WorktimeViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "Running",
+                    text = "I am in",
                     color = Color(0xFF00CC00),
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
@@ -96,7 +171,7 @@ fun QuickClockApp(viewModel: WorktimeViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "Idle",
+                    text = "I am out",
                     color = Color.Gray,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
@@ -113,7 +188,11 @@ fun QuickClockApp(viewModel: WorktimeViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { viewModel.checkIn() },
+                    onClick = { 
+                        viewModel.checkIn()
+                        // Delay to allow notification to be created
+                        mainActivity?.postDelayed({ onCheckInComplete() }, 500)
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(36.dp)
@@ -153,4 +232,9 @@ fun QuickClockApp(viewModel: WorktimeViewModel) {
             }
         }
     }
+}
+
+// Extension für delayed execution
+private fun MainActivity.postDelayed(action: () -> Unit, delayMillis: Long) {
+    this.window.decorView.postDelayed(action, delayMillis)
 }
