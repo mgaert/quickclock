@@ -7,6 +7,7 @@
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +29,34 @@
             </intent-filter>
 
         </activity>
+
+        <!-- QuickClock Complication Provider Service - DISABLED FOR NOW -->
+        <!--
+        <service
+            android:name=".QuickClockComplicationService"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="androidx.wear.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+
+            <meta-data
+                android:name="androidx.wear.complications.COMPLICATION_SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+
+            <meta-data
+                android:name="androidx.wear.complications.UPDATE_PERIOD_TYPE"
+                android:value="PERIODIC" />
+
+            <meta-data
+                android:name="androidx.wear.complications.UPDATE_PERIOD_MILLIS"
+                android:value="5000" />
+
+        </service>
+        -->
 
     </application>
 

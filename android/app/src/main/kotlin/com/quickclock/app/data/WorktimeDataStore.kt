@@ -18,10 +18,17 @@ private val Context.dataStore by preferencesDataStore(name = "quickclock_data")
 class WorktimeDataStore(private val context: Context) {
     private val SESSIONS_KEY = stringPreferencesKey("work_sessions")
     private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    private val sharedPrefs = context.getSharedPreferences("quickclock", Context.MODE_PRIVATE)
     
     val sessionsFlow: Flow<List<WorkSession>> = context.dataStore.data.map { preferences ->
         val sessionsJson = preferences[SESSIONS_KEY] ?: "[]"
         parseSessionsFromJson(sessionsJson)
+    }
+    
+    // Synchronous method for getting sessions (used by ComplicationProviderService)
+    fun getSessions(): List<WorkSession> {
+        val sessionsJson = sharedPrefs.getString("work_sessions", "[]") ?: "[]"
+        return parseSessionsFromJson(sessionsJson)
     }
     
     suspend fun addSession(session: WorkSession) {
@@ -29,7 +36,10 @@ class WorktimeDataStore(private val context: Context) {
             val currentJson = preferences[SESSIONS_KEY] ?: "[]"
             val sessions = parseSessionsFromJson(currentJson).toMutableList()
             sessions.add(session)
-            preferences[SESSIONS_KEY] = sessionsToJson(sessions)
+            val json = sessionsToJson(sessions)
+            preferences[SESSIONS_KEY] = json
+            // Also update SharedPreferences for synchronous access
+            sharedPrefs.edit().putString("work_sessions", json).apply()
         }
     }
     
@@ -40,7 +50,10 @@ class WorktimeDataStore(private val context: Context) {
             val index = sessions.indexOfFirst { it.id == session.id }
             if (index >= 0) {
                 sessions[index] = session
-                preferences[SESSIONS_KEY] = sessionsToJson(sessions)
+                val json = sessionsToJson(sessions)
+                preferences[SESSIONS_KEY] = json
+                // Also update SharedPreferences for synchronous access
+                sharedPrefs.edit().putString("work_sessions", json).apply()
             }
         }
     }
@@ -49,13 +62,17 @@ class WorktimeDataStore(private val context: Context) {
         context.dataStore.edit { preferences ->
             val currentJson = preferences[SESSIONS_KEY] ?: "[]"
             val sessions = parseSessionsFromJson(currentJson).filter { it.id != sessionId }
-            preferences[SESSIONS_KEY] = sessionsToJson(sessions)
+            val json = sessionsToJson(sessions)
+            preferences[SESSIONS_KEY] = json
+            // Also update SharedPreferences for synchronous access
+            sharedPrefs.edit().putString("work_sessions", json).apply()
         }
     }
     
     suspend fun clearAllSessions() {
         context.dataStore.edit { preferences ->
             preferences[SESSIONS_KEY] = "[]"
+            sharedPrefs.edit().putString("work_sessions", "[]").apply()
         }
     }
     
