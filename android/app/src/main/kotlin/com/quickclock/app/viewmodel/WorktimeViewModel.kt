@@ -73,13 +73,6 @@ class WorktimeViewModel(context: Context) : ViewModel() {
         }
     }
     
-    fun deleteSession(sessionId: String) {
-        viewModelScope.launch {
-            dataStore.deleteSession(sessionId)
-            _message.value = "Session deleted"
-        }
-    }
-    
     fun clearAllSessions() {
         viewModelScope.launch {
             dataStore.clearAllSessions()
