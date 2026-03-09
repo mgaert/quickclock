@@ -29,17 +29,3 @@ data class WorkSession(
     
     fun isActive(): Boolean = checkOutTime == null
 }
-
-data class DayWorkSummary(
-    val date: LocalDate,
-    val sessions: List<WorkSession>,
-) {
-    fun totalMinutes(): Long = sessions.sumOf { it.durationMinutes() }
-    
-    fun totalHoursString(): String {
-        val minutes = totalMinutes()
-        val hours = minutes / 60
-        val mins = minutes % 60
-        return String.format("%02d:%02d", hours, mins)
-    }
-}
