@@ -73,13 +73,6 @@ class WorktimeViewModel(context: Context) : ViewModel() {
         }
     }
     
-    fun clearAllSessions() {
-        viewModelScope.launch {
-            dataStore.clearAllSessions()
-            _message.value = "All sessions cleared"
-        }
-    }
-    
     private fun updateCurrentSession() {
         val today = LocalDate.now()
         val activeSessions = _sessions.value.filter { 
