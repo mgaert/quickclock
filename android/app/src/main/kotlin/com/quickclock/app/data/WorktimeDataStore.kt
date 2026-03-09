@@ -16,22 +16,22 @@ import org.json.JSONObject
 private val Context.dataStore by preferencesDataStore(name = "quickclock_data")
 
 class WorktimeDataStore(private val context: Context) {
-    private val SESSIONS_KEY = stringPreferencesKey("work_sessions")
+    private val sessionKey = stringPreferencesKey("work_sessions")
     private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     private val sharedPrefs = context.getSharedPreferences("quickclock", Context.MODE_PRIVATE)
     
     val sessionsFlow: Flow<List<WorkSession>> = context.dataStore.data.map { preferences ->
-        val sessionsJson = preferences[SESSIONS_KEY] ?: "[]"
+        val sessionsJson = preferences[sessionKey] ?: "[]"
         parseSessionsFromJson(sessionsJson)
     }
     
     suspend fun addSession(session: WorkSession) {
         context.dataStore.edit { preferences ->
-            val currentJson = preferences[SESSIONS_KEY] ?: "[]"
+            val currentJson = preferences[sessionKey] ?: "[]"
             val sessions = parseSessionsFromJson(currentJson).toMutableList()
             sessions.add(session)
             val json = sessionsToJson(sessions)
-            preferences[SESSIONS_KEY] = json
+            preferences[sessionKey] = json
             // Also update SharedPreferences for synchronous access
             sharedPrefs.edit().putString("work_sessions", json).apply()
         }
@@ -39,13 +39,13 @@ class WorktimeDataStore(private val context: Context) {
     
     suspend fun updateSession(session: WorkSession) {
         context.dataStore.edit { preferences ->
-            val currentJson = preferences[SESSIONS_KEY] ?: "[]"
+            val currentJson = preferences[sessionKey] ?: "[]"
             val sessions = parseSessionsFromJson(currentJson).toMutableList()
             val index = sessions.indexOfFirst { it.id == session.id }
             if (index >= 0) {
                 sessions[index] = session
                 val json = sessionsToJson(sessions)
-                preferences[SESSIONS_KEY] = json
+                preferences[sessionKey] = json
                 // Also update SharedPreferences for synchronous access
                 sharedPrefs.edit().putString("work_sessions", json).apply()
             }
