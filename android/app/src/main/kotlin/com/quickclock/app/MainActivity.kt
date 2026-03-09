@@ -12,6 +12,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -129,150 +131,158 @@ fun QuickClockApp(viewModel: WorktimeViewModel, onCheckInComplete: () -> Unit = 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
-        contentAlignment = Alignment.Center
+            .background(Color.Black)
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.Top)
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             // Title
-            Text(
-                text = "QuickClock",
-                color = Color.White,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                Text(
+                    text = "QuickClock",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             
             // Current session info
-             if (currentSession != null) {
-                 val session = currentSession!!
-                 Text(
-                     text = currentTime,
-                     color = Color(0xFF00FF00),
-                     fontSize = 24.sp,
-                     textAlign = TextAlign.Center,
-                     modifier = Modifier.fillMaxWidth()
-                 )
-                 Text(
-                     text = "I am in",
-                     color = Color(0xFF00CC00),
-                     fontSize = 11.sp,
-                     textAlign = TextAlign.Center,
-                     modifier = Modifier.fillMaxWidth()
-                 )
-                 // Show current check-in time
-                 Text(
-                     text = "IN: ${session.checkInTimeString()}",
-                     color = Color(0xFF00FF00),
-                     fontSize = 10.sp,
-                     textAlign = TextAlign.Center,
-                     modifier = Modifier.fillMaxWidth()
-                 )
-            } else {
-                Text(
-                    text = "00:00",
-                    color = Color.Gray,
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "I am out",
-                    color = Color.Gray,
-                    fontSize = 11.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            
-            // Check-in/Check-out buttons
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 2.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { 
-                        viewModel.checkIn()
-                        // Delay to allow notification to be created
-                        mainActivity?.postDelayed({ onCheckInComplete() }, 500)
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(32.dp)
-                ) {
-                    Text("IN", color = Color.White, fontSize = 10.sp)
-                }
-                
-                Button(
-                    onClick = { viewModel.checkOut() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(32.dp),
-                    enabled = currentSession != null
-                ) {
-                    Text("OUT", color = Color.White, fontSize = 10.sp)
-                }
-            }
-            
-            // Today's summary
-            Text(
-                text = "Today: $todaySummary",
-                color = Color(0xFFCCCCCC),
-                fontSize = 10.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            
-            // Session log header
-            if (sessions.isNotEmpty()) {
-                Text(
-                    text = "Sessions:",
-                    color = Color(0xFFFFFFFF),
-                    fontSize = 9.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            
-            // Sessions list (scrollable)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(2.dp),
-                    verticalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    val todaySessions = sessions.filter { 
-                        it.date == java.time.LocalDate.now() 
-                    }.reversed()
-                    
-                    todaySessions.forEach { session ->
-                        SessionItem(session)
+            item {
+                if (currentSession != null) {
+                    val session = currentSession!!
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            text = currentTime,
+                            color = Color(0xFF00FF00),
+                            fontSize = 24.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            text = "I am in",
+                            color = Color(0xFF00CC00),
+                            fontSize = 11.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            text = "IN: ${session.checkInTimeString()}",
+                            color = Color(0xFF00FF00),
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            text = "00:00",
+                            color = Color.Gray,
+                            fontSize = 24.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            text = "I am out",
+                            color = Color.Gray,
+                            fontSize = 11.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
             }
             
-            // Message feedback
-            if (message.isNotEmpty()) {
+            // Check-in/Check-out buttons
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = { 
+                            viewModel.checkIn()
+                            mainActivity?.postDelayed({ onCheckInComplete() }, 500)
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(32.dp)
+                    ) {
+                        Text("IN", color = Color.White, fontSize = 10.sp)
+                    }
+                    
+                    Button(
+                        onClick = { viewModel.checkOut() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(32.dp),
+                        enabled = currentSession != null
+                    ) {
+                        Text("OUT", color = Color.White, fontSize = 10.sp)
+                    }
+                }
+            }
+            
+            // Today's summary
+            item {
                 Text(
-                    text = message,
-                    color = Color(0xFF00FF00),
-                    fontSize = 9.sp,
+                    text = "Today: $todaySummary",
+                    color = Color(0xFFCCCCCC),
+                    fontSize = 10.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+            
+            // Session log header
+            if (sessions.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Sessions:",
+                        color = Color(0xFFFFFFFF),
+                        fontSize = 9.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            
+            // Sessions list
+            val todaySessions = sessions.filter { 
+                it.date == java.time.LocalDate.now() 
+            }.reversed()
+            
+            items(todaySessions) { session ->
+                SessionItem(session)
+            }
+            
+            // Message feedback
+            if (message.isNotEmpty()) {
+                item {
+                    Text(
+                        text = message,
+                        color = Color(0xFF00FF00),
+                        fontSize = 9.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
