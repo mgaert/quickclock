@@ -23,7 +23,12 @@ class WorktimeViewModel(context: Context) : ViewModel() {
     
     private val _currentTime = MutableStateFlow("00:00")
     val currentTime: StateFlow<String> = _currentTime.asStateFlow()
-    
+
+    private val _inTime = MutableStateFlow("00:00")
+    val inTime: StateFlow<String> = _inTime.asStateFlow()
+    private val _outTime = MutableStateFlow("00:00")
+    val outTime: StateFlow<String> = _outTime.asStateFlow()
+
     private val _todaySummary = MutableStateFlow("00:00")
     val todaySummary: StateFlow<String> = _todaySummary.asStateFlow()
     
@@ -99,6 +104,10 @@ class WorktimeViewModel(context: Context) : ViewModel() {
         
         if (_currentSession.value != null) {
             _currentTime.value = _currentSession.value!!.durationString()
+            _inTime.value = _currentSession.value!!.checkInTimeString()
+        } else {
+            _inTime.value = "--:--"
+            _outTime.value = "--:--"
         }
     }
     
