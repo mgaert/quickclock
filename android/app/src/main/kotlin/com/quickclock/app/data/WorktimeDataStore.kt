@@ -66,7 +66,7 @@ class WorktimeDataStore(private val context: Context) {
                     date = LocalDate.parse(obj.getString("date"))
                 )
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             emptyList()
         }
     }
