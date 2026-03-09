@@ -73,10 +73,6 @@ class WorktimeViewModel(context: Context) : ViewModel() {
         }
     }
     
-    fun exportCSV(): String {
-        return dataStore.exportToCSV(_sessions.value)
-    }
-    
     fun deleteSession(sessionId: String) {
         viewModelScope.launch {
             dataStore.deleteSession(sessionId)
