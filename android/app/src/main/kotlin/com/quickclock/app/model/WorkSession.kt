@@ -3,6 +3,7 @@ package com.quickclock.app.model
 import java.time.LocalDateTime
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 data class WorkSession(
     val id: String = System.currentTimeMillis().toString(),
@@ -19,7 +20,7 @@ data class WorkSession(
         val minutes = durationMinutes()
         val hours = minutes / 60
         val mins = minutes % 60
-        return String.format("%02d:%02d", hours, mins)
+        return String.format(Locale.US, "%02d:%02d", hours, mins)
     }
     
     fun checkInTimeString(): String = checkInTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.LocalDate
+import java.util.Locale
 
 class WorktimeViewModel(context: Context) : ViewModel() {
     private val dataStore = WorktimeDataStore(context)
@@ -117,6 +118,6 @@ class WorktimeViewModel(context: Context) : ViewModel() {
         val totalMinutes = todaySessions.sumOf { it.durationMinutes() }
         val hours = totalMinutes / 60
         val mins = totalMinutes % 60
-        _todaySummary.value = String.format("%02d:%02d", hours, mins)
+        _todaySummary.value = String.format(Locale.US, "%02d:%02d", hours, mins)
     }
 }
