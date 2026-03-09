@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     return WorktimeViewModel(applicationContext) as T
                 }
             }
-        ).get(WorktimeViewModel::class.java)
+        )[WorktimeViewModel::class.java]
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
