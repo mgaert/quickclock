@@ -25,12 +25,6 @@ class WorktimeDataStore(private val context: Context) {
         parseSessionsFromJson(sessionsJson)
     }
     
-    // Synchronous method for getting sessions (used by ComplicationProviderService)
-    fun getSessions(): List<WorkSession> {
-        val sessionsJson = sharedPrefs.getString("work_sessions", "[]") ?: "[]"
-        return parseSessionsFromJson(sessionsJson)
-    }
-    
     suspend fun addSession(session: WorkSession) {
         context.dataStore.edit { preferences ->
             val currentJson = preferences[SESSIONS_KEY] ?: "[]"
@@ -55,24 +49,6 @@ class WorktimeDataStore(private val context: Context) {
                 // Also update SharedPreferences for synchronous access
                 sharedPrefs.edit().putString("work_sessions", json).apply()
             }
-        }
-    }
-    
-    suspend fun deleteSession(sessionId: String) {
-        context.dataStore.edit { preferences ->
-            val currentJson = preferences[SESSIONS_KEY] ?: "[]"
-            val sessions = parseSessionsFromJson(currentJson).filter { it.id != sessionId }
-            val json = sessionsToJson(sessions)
-            preferences[SESSIONS_KEY] = json
-            // Also update SharedPreferences for synchronous access
-            sharedPrefs.edit().putString("work_sessions", json).apply()
-        }
-    }
-    
-    suspend fun clearAllSessions() {
-        context.dataStore.edit { preferences ->
-            preferences[SESSIONS_KEY] = "[]"
-            sharedPrefs.edit().putString("work_sessions", "[]").apply()
         }
     }
     
@@ -107,19 +83,5 @@ class WorktimeDataStore(private val context: Context) {
             array.put(obj)
         }
         return array.toString()
-    }
-    
-    fun exportToCSV(sessions: List<WorkSession>): String {
-        val sb = StringBuilder()
-        sb.append("Date,Check In,Check Out,Duration\n")
-        
-        sessions.groupBy { it.date }.forEach { (_, daySessions) ->
-            daySessions.forEach { session ->
-                sb.append("${session.date},${session.checkInTimeString()},")
-                sb.append("${session.checkOutTimeString() ?: "---"},${session.durationString()}\n")
-            }
-        }
-        
-        return sb.toString()
     }
 }
