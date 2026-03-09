@@ -20,6 +20,15 @@ android {
         ]
     }
     
+    signingConfigs {
+        release {
+            storeFile file("/Users/mgaert/Development/quickclock/quickclock.keystore")
+            storePassword "quickclock123"
+            keyAlias "quickclock"
+            keyPassword "quickclock123"
+        }
+    }
+    
     buildTypes {
         debug {
             debuggable true
@@ -27,6 +36,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     
