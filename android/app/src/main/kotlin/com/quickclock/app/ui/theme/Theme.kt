@@ -1,11 +1,11 @@
 package com.quickclock.app.ui.theme
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Colors
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = Colors(
     primary = Color(0xFF00FF00),
     primaryVariant = Color(0xFF00CC00),
     secondary = Color(0xFFFFFFFF),
